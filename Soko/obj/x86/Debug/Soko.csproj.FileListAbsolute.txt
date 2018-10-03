@@ -1,0 +1,38 @@
+C:\Documents and Settings\az38953\Desktop\opa\Soko\Soko\bin\Debug\Soko.exe
+C:\Documents and Settings\az38953\Desktop\opa\Soko\Soko\bin\Debug\Soko.pdb
+C:\Documents and Settings\az38953\Desktop\opa\Soko\Soko\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\az38953\Desktop\opa\Soko\Soko\obj\x86\Debug\Soko.Form1.resources
+C:\Documents and Settings\az38953\Desktop\opa\Soko\Soko\obj\x86\Debug\Soko.Properties.Resources.resources
+C:\Documents and Settings\az38953\Desktop\opa\Soko\Soko\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Documents and Settings\az38953\Desktop\opa\Soko\Soko\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Documents and Settings\az38953\Desktop\opa\Soko\Soko\obj\x86\Debug\Soko.exe
+C:\Documents and Settings\az38953\Desktop\opa\Soko\Soko\obj\x86\Debug\Soko.pdb
+C:\Documents and Settings\az38953\Desktop\opa\Soko\Soko\bin\Debug\Levels\Level001.txt
+C:\Documents and Settings\az38953\Desktop\opa\Soko\Soko\obj\x86\Debug\Soko.FormGame.resources
+D:\Desenvolvimento\Games\C-SHARP\soko\Soko\Soko\obj\x86\Debug\Soko.exe
+D:\Desenvolvimento\Games\C-SHARP\soko\Soko\Soko\obj\x86\Debug\Soko.pdb
+D:\Desenvolvimento\Games\C-SHARP\soko\Soko\Soko\bin\Debug\Levels\Level001.txt
+D:\Desenvolvimento\Games\C-SHARP\soko\Soko\Soko\bin\Debug\Soko.exe
+D:\Desenvolvimento\Games\C-SHARP\soko\Soko\Soko\bin\Debug\Soko.pdb
+D:\Desenvolvimento\Games\C-SHARP\soko\Soko\Soko\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\Desenvolvimento\Games\C-SHARP\soko\Soko\Soko\obj\x86\Debug\Soko.Form1.resources
+D:\Desenvolvimento\Games\C-SHARP\soko\Soko\Soko\obj\x86\Debug\Soko.FormGame.resources
+D:\Desenvolvimento\Games\C-SHARP\soko\Soko\Soko\obj\x86\Debug\Soko.Properties.Resources.resources
+D:\Desenvolvimento\Games\C-SHARP\soko\Soko\Soko\obj\x86\Debug\GenerateResource.read.1.tlog
+D:\Desenvolvimento\Games\C-SHARP\soko\Soko\Soko\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\Dell\Documents\My Documents\Dev\Games\C-SHARP\soko\Soko\Soko\bin\Debug\Levels\Level001.txt
+C:\Users\Dell\Documents\My Documents\Dev\Games\C-SHARP\soko\Soko\Soko\bin\Debug\Soko.exe.config
+C:\Users\Dell\Documents\My Documents\Dev\Games\C-SHARP\soko\Soko\Soko\bin\Debug\Soko.exe
+C:\Users\Dell\Documents\My Documents\Dev\Games\C-SHARP\soko\Soko\Soko\bin\Debug\Soko.pdb
+C:\Users\Dell\Documents\My Documents\Dev\Games\C-SHARP\soko\Soko\Soko\obj\x86\Debug\Soko.Form1.resources
+C:\Users\Dell\Documents\My Documents\Dev\Games\C-SHARP\soko\Soko\Soko\obj\x86\Debug\Soko.FormGame2.resources
+C:\Users\Dell\Documents\My Documents\Dev\Games\C-SHARP\soko\Soko\Soko\obj\x86\Debug\Soko.Properties.Resources.resources
+C:\Users\Dell\Documents\My Documents\Dev\Games\C-SHARP\soko\Soko\Soko\obj\x86\Debug\Soko.csproj.GenerateResource.cache
+C:\Users\Dell\Documents\My Documents\Dev\Games\C-SHARP\soko\Soko\Soko\obj\x86\Debug\Soko.csproj.CoreCompileInputs.cache
+C:\Users\Dell\Documents\My Documents\Dev\Games\C-SHARP\soko\Soko\Soko\obj\x86\Debug\Soko.exe
+C:\Users\Dell\Documents\My Documents\Dev\Games\C-SHARP\soko\Soko\Soko\obj\x86\Debug\Soko.pdb
+C:\Users\Dell\Documents\My Documents\Dev\Games\C-SHARP\soko\Soko\Soko\obj\x86\Debug\Soko.csprojAssemblyReference.cache
+C:\Users\Dell\Documents\My Documents\Dev\Games\C-SHARP\soko\Soko\Soko\bin\Debug\Resources\box.jpg
+C:\Users\Dell\Documents\My Documents\Dev\Games\C-SHARP\soko\Soko\Soko\bin\Debug\Resources\player.jpg
+C:\Users\Dell\Documents\My Documents\Dev\Games\C-SHARP\soko\Soko\Soko\bin\Debug\Resources\wall.jpg
+C:\Users\Dell\Documents\My Documents\Dev\Games\C-SHARP\soko\Soko\Soko\bin\Debug\Resources\slot.png
