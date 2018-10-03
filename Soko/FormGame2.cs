@@ -28,7 +28,7 @@ namespace Soko
 
         private void FormGame2_Load(object sender, EventArgs e)
         {
-            this.increment = 15;
+            this.increment = 30;
             Models.BlockBase.Increment = this.increment;
             this.LoadLevel(1);
         }
@@ -66,11 +66,11 @@ namespace Soko
                             this.panelGame.Controls.Add(newBlock.Picture);
                             break;
                         case 'P':
-                            //newBlock = new Models.Emty(new Point(32 * x, 32 * y));
                             this.player = new Models.Player(this.increment);
                             this.player.SetStartPosition(new Point(30 * x, 30 * y));
                             this.panelGame.Controls.Add(this.player.Picture);
                             this.panelGame.Controls[this.panelGame.Controls.Count - 1].BringToFront();
+                            this.lbPlayer.Text = this.player.Position.ToString();
                             break;
                         default:
                             break;
@@ -87,7 +87,7 @@ namespace Soko
 
 
             }
-            
+
 
 
             #region CURRENT LEVEL
@@ -105,28 +105,63 @@ namespace Soko
 
         private void FormGame2_KeyDown(object sender, KeyEventArgs e)
         {
+
             switch (e.KeyCode)
             {
                 case Keys.Right:
-                    //this.imgPlayer.Location = new Point(this.imgPlayer.Location.X + 15, this.imgPlayer.Location.Y);
-                    this.player.MoveRight();
+                    if (this.currentLevel_Rigid[this.player.Position.X + 1, this.player.Position.Y] == null ||
+                       !this.currentLevel_Rigid[this.player.Position.X + 1, this.player.Position.Y].RigidBody)
+                    {
+                        this.player.MoveRight();
+                    }
+                    else
+                    {
+                        ;//rigid
+                    }
+
                     break;
                 case Keys.Left:
-                    //this.imgPlayer.Location = new Point(this.imgPlayer.Location.X - 15, this.imgPlayer.Location.Y);
-                    this.player.MoveLeft();
+                    if (this.currentLevel_Rigid[this.player.Position.X - 1, this.player.Position.Y] == null ||
+                       !this.currentLevel_Rigid[this.player.Position.X - 1, this.player.Position.Y].RigidBody)
+                    {
+                        this.player.MoveLeft();
+                    }
+                    else
+                    {
+                        ;//rigid
+                    }
+
                     break;
                 case Keys.Up:
-                    //this.imgPlayer.Location = new Point(this.imgPlayer.Location.X, this.imgPlayer.Location.Y - 15);
-                    this.player.MoveUP();
+                    if (this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y - 1] == null ||
+                       !this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y - 1].RigidBody)
+                    {
+                        this.player.MoveUP();
+                    }
+                    else
+                    {
+                        ;//rigid
+                    }
+
                     break;
                 case Keys.Down:
-                    //this.imgPlayer.Location = new Point(this.imgPlayer.Location.X, this.imgPlayer.Location.Y + 15);
-                    this.player.MoveDown();
+                    if (this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y + 1] == null ||
+                       !this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y + 1].RigidBody)
+                    {
+                        this.player.MoveDown();
+                    }
+                    else
+                    {
+                        ;//rigid
+                    }
+
                     break;
                 default:
                     break;
             }
 
+            this.lbPlayer.Text = this.player.Position.ToString();
         }
+
     }
 }

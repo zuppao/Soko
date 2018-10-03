@@ -13,7 +13,8 @@ namespace Soko.Models
         //public Position playerPos;
         //public System.Windows.Forms.TextBox playerObj;
 
-        public Player(short _increment) : base("player.jpg",new Point(0,0), "player")
+        
+        public Player(short _increment) : base("player.jpg", new Point(0, 0), "player")
         {
             this.increment = _increment;
             this.movesCount = 0;
