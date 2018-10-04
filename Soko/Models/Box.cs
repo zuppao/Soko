@@ -8,7 +8,7 @@ namespace Soko.Models
 {
     class Box : BlockBase
     {
-        public Box(Point _startPosition) : base("box.jpg", _startPosition, "box")
+        public Box(Point _startPosition) : base("box.jpg", _startPosition, "B")
         {
             this.rigidBody = true;
         }

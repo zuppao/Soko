@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Soko.Models
 {
-    abstract class BlockBase
+    internal class BlockBase
     {
         protected bool rigidBody;
         public static short Increment = 0;
@@ -28,6 +28,10 @@ namespace Soko.Models
             }
         }
 
+        public BlockBase()
+        {
+            this.rigidBody = false;
+        }
         public BlockBase(string _imgName, Point _startPosition, string _tag)
         {
             this.rigidBody = false;
@@ -60,5 +64,6 @@ namespace Soko.Models
                                                 this.pictureBox.Location.Y);
         }
 
+        
     }
 }

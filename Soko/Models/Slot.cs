@@ -9,7 +9,7 @@ namespace Soko.Models
     class Slot : BlockBase
     {
 
-        public Slot(Point _startPosition) : base("slot.png", _startPosition, "slot")
+        public Slot(Point _startPosition) : base("slot.png", _startPosition, "S")
         {
         }
     }
