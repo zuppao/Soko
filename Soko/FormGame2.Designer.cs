@@ -31,6 +31,7 @@
             this.panelGame = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.lbPlayer = new System.Windows.Forms.Label();
+            this.tbCurrentRigid = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // panelGame
@@ -59,11 +60,23 @@
             this.lbPlayer.TabIndex = 2;
             this.lbPlayer.Text = "location";
             // 
+            // tbCurrentRigid
+            // 
+            this.tbCurrentRigid.Enabled = false;
+            this.tbCurrentRigid.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbCurrentRigid.Location = new System.Drawing.Point(1060, 234);
+            this.tbCurrentRigid.Multiline = true;
+            this.tbCurrentRigid.Name = "tbCurrentRigid";
+            this.tbCurrentRigid.ReadOnly = true;
+            this.tbCurrentRigid.Size = new System.Drawing.Size(350, 335);
+            this.tbCurrentRigid.TabIndex = 3;
+            // 
             // FormGame2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1437, 666);
+            this.Controls.Add(this.tbCurrentRigid);
             this.Controls.Add(this.lbPlayer);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panelGame);
@@ -82,5 +95,6 @@
         private System.Windows.Forms.Panel panelGame;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lbPlayer;
+        private System.Windows.Forms.TextBox tbCurrentRigid;
     }
 }

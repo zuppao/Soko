@@ -10,7 +10,7 @@ namespace Soko.Models
     {
 
 
-        public Wall(Point _startPosition) : base("wall.jpg", _startPosition, "wall")
+        public Wall(Point _startPosition) : base("wall.jpg", _startPosition, "#")
         {
             this.rigidBody = true;
         }
