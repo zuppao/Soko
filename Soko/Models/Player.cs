@@ -8,11 +8,14 @@ namespace Soko.Models
 {
     class Player : BlockBase
     {
-        int movesCount;
-        short increment;
+        private int movesCount;
+        private short increment;
         //public Position playerPos;
         //public System.Windows.Forms.TextBox playerObj;
-
+        internal int MovesCount
+        {
+            get { return this.movesCount; }
+        }
         
         public Player(short _increment) : base("player.jpg", new Point(0, 0), "player")
         {
