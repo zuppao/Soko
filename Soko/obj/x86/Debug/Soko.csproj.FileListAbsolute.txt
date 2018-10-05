@@ -52,3 +52,5 @@ C:\Users\Dell\Documents\My Documents\Dev\repositories\Soko\Soko\obj\x86\Debug\So
 C:\Users\Dell\Documents\My Documents\Dev\repositories\Soko\Soko\obj\x86\Debug\Soko.csproj.CoreCompileInputs.cache
 C:\Users\Dell\Documents\My Documents\Dev\repositories\Soko\Soko\obj\x86\Debug\Soko.exe
 C:\Users\Dell\Documents\My Documents\Dev\repositories\Soko\Soko\obj\x86\Debug\Soko.pdb
+C:\Users\Dell\Documents\My Documents\Dev\repositories\Soko\Soko\bin\Debug\Levels\Level002.txt
+C:\Users\Dell\Documents\My Documents\Dev\repositories\Soko\Soko\obj\x86\Debug\Soko.FormHelp.resources

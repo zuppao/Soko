@@ -13,14 +13,15 @@ namespace Soko
     public partial class FormGame2 : Form
     {
         //25 columns (750px)
-        //15 lines (450px)
+        //17 lines (510px)
         //30x30 px each image
         Models.BlockBase[,] currentLevel_Rigid;
         Models.Player player;
         List<Point> slotList;
         List<Models.BlockBase> boxList;
         short increment;
-
+        ushort currentLevel;
+        int pushes;
         public FormGame2()
         {
             InitializeComponent();
@@ -30,30 +31,32 @@ namespace Soko
         {
             this.increment = 30;
             Models.BlockBase.Increment = this.increment;
+            this.currentLevel = 1;
+            this.pushes = 0;
+            this.lbStatusTotalLevels.Text = Directory.GetFiles(System.Environment.CurrentDirectory + "\\Levels", "Level***.txt").Length.ToString("/ 00");
 
             this.slotList = new List<Point>();
             this.boxList = new List<Models.BlockBase>();
-            this.LoadLevel(1);
+            this.LoadLevel();
         }
 
 
 
-        private void LoadLevel(short _level)
+        private void LoadLevel()
         {
             this.panelGame.Controls.Clear();
-            this.currentLevel_Rigid = new Models.BlockBase[25, 15];
+            this.currentLevel_Rigid = new Models.BlockBase[25, 17];
             this.slotList.Clear();
             this.boxList.Clear();
-
+            this.lbStatusCurrentLevel.Text = this.currentLevel.ToString("00");
             Models.BlockBase newBlock;
             List<Control> slotBlocks = new List<Control>();
             char[] blocks;
 
-            string[] lineBlocks = File.ReadAllLines(System.Environment.CurrentDirectory + "\\Levels\\Level" + _level.ToString("000") + ".txt");
+            string[] lineBlocks = File.ReadAllLines(System.Environment.CurrentDirectory + "\\Levels\\Level" + this.currentLevel.ToString("000") + ".txt");
             for (int y = 0; y < lineBlocks.Length; y++)
             {
                 blocks = lineBlocks[y].ToCharArray();
-                this.tbCurrentRigid.Text += lineBlocks[y].ToString() + "\r\n";//test
                 for (int x = 0; x < blocks.Length; x++)
                 {
                     newBlock = null;
@@ -80,7 +83,6 @@ namespace Soko
                             this.player.SetStartPosition(new Point(30 * x, 30 * y));
                             this.panelGame.Controls.Add(this.player.Picture);
                             this.panelGame.Controls[this.panelGame.Controls.Count - 1].BringToFront();
-                            this.lbPlayer.Text = this.player.Position.ToString();//test
                             break;
                         default:
                             newBlock = new Models.BlockBase();
@@ -98,6 +100,7 @@ namespace Soko
             {//just to send all 'slot' blocks to the back of the panel
                 slot.SendToBack();
             }
+
             slotBlocks = null;
             newBlock = null;
             blocks = null;
@@ -123,6 +126,7 @@ namespace Soko
                             this.currentLevel_Rigid[this.player.Position.X + 2, this.player.Position.Y] = this.currentLevel_Rigid[this.player.Position.X + 1, this.player.Position.Y];
                             this.currentLevel_Rigid[this.player.Position.X + 1, this.player.Position.Y] = new Models.BlockBase();
                             this.player.MoveRight();
+                            this.pushes++;
                             this.CheckSlots();
                         }
                     }
@@ -141,6 +145,7 @@ namespace Soko
                             this.currentLevel_Rigid[this.player.Position.X - 2, this.player.Position.Y] = this.currentLevel_Rigid[this.player.Position.X - 1, this.player.Position.Y];
                             this.currentLevel_Rigid[this.player.Position.X - 1, this.player.Position.Y] = new Models.BlockBase();
                             this.player.MoveLeft();
+                            this.pushes++;
                             this.CheckSlots();
                         }
                     }
@@ -159,6 +164,7 @@ namespace Soko
                             this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y - 2] = this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y - 1];
                             this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y - 1] = new Models.BlockBase();
                             this.player.MoveUP();
+                            this.pushes++;
                             this.CheckSlots();
                         }
                     }
@@ -177,6 +183,7 @@ namespace Soko
                             this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y + 2] = this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y + 1];
                             this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y + 1] = new Models.BlockBase();
                             this.player.MoveDown();
+                            this.pushes++;
                             this.CheckSlots();
                         }
                     }
@@ -184,34 +191,18 @@ namespace Soko
                 default:
                     break;
             }
-
-            //this.UpdateTbCurrentRigid();//test
-            this.lbPlayer.Text = this.player.Position.ToString();
+            this.lbStatusMoves.Text = this.player.MovesCount.ToString("000000");
+            this.lbStatusPushes.Text = this.pushes.ToString("000000");
         }
-
-        //private void UpdateTbCurrentRigid()
-        //{
-        //    this.tbCurrentRigid.Clear();
-        //    StringBuilder sb = new StringBuilder();
-        //    for (int y = 0; y < 15; y++)
-        //    {
-        //        sb.Clear();
-        //        for (int x = 0; x < 25; x++)
-        //        {
-        //            sb.Append(
-        //                this.currentLevel_Rigid[x, y].Picture != null ? this.currentLevel_Rigid[x, y].Picture.Tag : "0"
-        //                );
-        //        }
-        //        this.tbCurrentRigid.Text += sb.ToString() + "\r\n";//test
-        //    }
-        //}
 
         private void CheckSlots()
         {
             for (short i = 0; i < this.boxList.Count; i++)
             {
                 if (!this.slotList.Contains(this.boxList[i].Picture.Location))
+                {
                     return;
+                }
             }
             this.LevelEnd();
         }
@@ -219,7 +210,14 @@ namespace Soko
         private void LevelEnd()
         {
             MessageBox.Show("You WON!");
-            this.LoadLevel(1);
+            this.currentLevel++;
+            this.LoadLevel();
+        }
+
+        private void btHelp_Click(object sender, EventArgs e)
+        {
+            FormHelp formHelp = new FormHelp();
+            formHelp.ShowDialog();
         }
     }
 }
