@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Soko.Models
 {
+    [Serializable]
     internal class BlockBase
     {
         protected bool rigidBody;

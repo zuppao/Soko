@@ -6,18 +6,19 @@ using System.Threading.Tasks;
 
 namespace Soko.Models
 {
+    [Serializable]
     class Player : BlockBase
     {
         private int movesCount;
         private short increment;
-        //public Position playerPos;
-        //public System.Windows.Forms.TextBox playerObj;
+        Point lastPlayerLocation;
         internal int MovesCount
         {
             get { return this.movesCount; }
+            set { this.movesCount = value; }
         }
         
-        public Player(short _increment) : base("player.jpg", new Point(0, 0), "player")
+        public Player(short _increment) : base("player.jpg", new Point(0, 0), "P")
         {
             this.increment = _increment;
             this.movesCount = 0;
@@ -28,72 +29,47 @@ namespace Soko.Models
         public void SetStartPosition(Point _startPosition)
         {
             this.Picture.Location = _startPosition;
-            //this.playerPos = new Position((short)(_startPosition.X / 30),
-            //                              (short)(_startPosition.Y / 30));
-
+            this.lastPlayerLocation = _startPosition;
         }
+        internal void ResetMovesCount()
+        {
+            this.movesCount = 0;
+        }
+        internal void Undo()
+        {
+            if (this.Picture.Location != this.lastPlayerLocation)
+            {
+                this.SetStartPosition(this.lastPlayerLocation);
+                this.movesCount++;
+            }
+        }
+
         internal override void MoveUP()
         {
+            this.lastPlayerLocation = this.Picture.Location;
             base.MoveUP();
-            //this.playerObj.Location = new Point(this.playerObj.Location.X,
-            //                                    this.playerObj.Location.Y - this.increment);
             this.movesCount++;
-            //this.playerPos.MoveVertical((float)-0.5);
 
         }
         internal override void MoveDown()
         {
+            this.lastPlayerLocation = this.Picture.Location;
             base.MoveDown();
-            //this.playerObj.Location = new Point(this.playerObj.Location.X,
-            //                                    this.playerObj.Location.Y + this.increment);
             this.movesCount++;
-            //this.playerPos.MoveVertical((float)0.5);
         }
         internal override void MoveLeft()
         {
+            this.lastPlayerLocation = this.Picture.Location;
             base.MoveLeft();
-            //this.playerObj.Location = new Point(this.playerObj.Location.X - this.increment,
-            //                                    this.playerObj.Location.Y);
             this.movesCount++;
-            //this.playerPos.MoveHorizontal((float)-0.5);
         }
         internal override void MoveRight()
         {
+            this.lastPlayerLocation = this.Picture.Location;
             base.MoveRight();
-            //this.playerObj.Location = new Point(this.playerObj.Location.X + this.increment,
-            //                                    this.playerObj.Location.Y);
             this.movesCount++;
-            //this.playerPos.MoveHorizontal((float)0.5);
         }
     }
 
-    //internal class Position
-    //{
-    //    float x, y;//0 based
-    //    public float X
-    //    {
-    //        get { return this.x; }
-    //    }
-    //    public float Y
-    //    {
-    //        get { return this.y; }
-    //    }
-    //    public Position(short _x, short _y)
-    //    {
-    //        this.x = _x;
-    //        this.y = _y;
-    //    }
-
-    //    internal void MoveHorizontal(float _inc)
-    //    {
-    //        this.x += _inc;
-    //    }
-    //    internal void MoveVertical(float _inc)
-    //    {
-    //        this.y += _inc;
-    //    }
-
-    //    // essa funcao incrementa/diminui 0,5 quando for movimento horizontal
-    //    // e incrementa/diminui 0,5 quando for movimento vertical.
-    //}
+    
 }

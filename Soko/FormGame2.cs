@@ -4,8 +4,8 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Soko
@@ -17,11 +17,14 @@ namespace Soko
         //30x30 px each image
         Models.BlockBase[,] currentLevel_Rigid;
         Models.Player player;
-        List<Point> slotList;
+        Models.BlockBase lastBoxMoved;
+        List<Point> slotPositionList;
         List<Models.BlockBase> boxList;
+
         short increment;
         ushort currentLevel;
         int pushes;
+
         public FormGame2()
         {
             InitializeComponent();
@@ -32,31 +35,35 @@ namespace Soko
             this.increment = 30;
             Models.BlockBase.Increment = this.increment;
             this.currentLevel = 1;
-            this.pushes = 0;
             this.lbStatusTotalLevels.Text = Directory.GetFiles(System.Environment.CurrentDirectory + "\\Levels", "Level***.txt").Length.ToString("/ 00");
 
-            this.slotList = new List<Point>();
+            this.slotPositionList = new List<Point>();
             this.boxList = new List<Models.BlockBase>();
-            this.LoadLevel();
+            this.player = new Models.Player(this.increment);
+            this.LoadLevel(null);
         }
 
-
-
-        private void LoadLevel()
+        private void LoadLevel(string[] _lineBlocks)
         {
-            this.panelGame.Controls.Clear();
-            this.currentLevel_Rigid = new Models.BlockBase[25, 17];
-            this.slotList.Clear();
+            this.slotPositionList.Clear();
             this.boxList.Clear();
-            this.lbStatusCurrentLevel.Text = this.currentLevel.ToString("00");
+            this.panelGame.Controls.Clear();
             Models.BlockBase newBlock;
             List<Control> slotBlocks = new List<Control>();
             char[] blocks;
 
-            string[] lineBlocks = File.ReadAllLines(System.Environment.CurrentDirectory + "\\Levels\\Level" + this.currentLevel.ToString("000") + ".txt");
-            for (int y = 0; y < lineBlocks.Length; y++)
+            if (_lineBlocks == null)//load new level
             {
-                blocks = lineBlocks[y].ToCharArray();
+                _lineBlocks = File.ReadAllLines(System.Environment.CurrentDirectory + "\\Levels\\Level" + this.currentLevel.ToString("000") + ".txt");
+                this.pushes = 0;
+                this.player.ResetMovesCount();
+                this.currentLevel_Rigid = new Models.BlockBase[25, 17];
+                this.lbStatusCurrentLevel.Text = this.currentLevel.ToString("00");
+            }
+
+            for (int y = 0; y < _lineBlocks.Length; y++)
+            {
+                blocks = _lineBlocks[y].ToCharArray();
                 for (int x = 0; x < blocks.Length; x++)
                 {
                     newBlock = null;
@@ -70,16 +77,38 @@ namespace Soko
                             newBlock = new Models.Slot(new Point(30 * x, 30 * y));
                             this.panelGame.Controls.Add(newBlock.Picture);
                             slotBlocks.Add(this.panelGame.Controls[this.panelGame.Controls.Count - 1]);
-                            this.slotList.Add(newBlock.Picture.Location);
+                            this.slotPositionList.Add(newBlock.Picture.Location);
                             break;
                         case 'B':
                             newBlock = new Models.Box(new Point(30 * x, 30 * y));
                             this.panelGame.Controls.Add(newBlock.Picture);
                             this.boxList.Add(newBlock);
                             break;
+                        case 'X'://box and slot
+                            newBlock = new Models.Slot(new Point(30 * x, 30 * y));
+                            this.panelGame.Controls.Add(newBlock.Picture);
+                            slotBlocks.Add(this.panelGame.Controls[this.panelGame.Controls.Count - 1]);
+                            this.slotPositionList.Add(newBlock.Picture.Location);
+                            this.currentLevel_Rigid[x, y] = newBlock;
+
+                            newBlock = new Models.Box(new Point(30 * x, 30 * y));
+                            this.panelGame.Controls.Add(newBlock.Picture);
+                            this.boxList.Add(newBlock);
+                            break;
+                        case 'Y'://player and slot
+                            newBlock = new Models.Slot(new Point(30 * x, 30 * y));
+                            this.panelGame.Controls.Add(newBlock.Picture);
+                            slotBlocks.Add(this.panelGame.Controls[this.panelGame.Controls.Count - 1]);
+                            this.slotPositionList.Add(newBlock.Picture.Location);
+                            this.currentLevel_Rigid[x, y] = newBlock;
+
+                            newBlock = new Models.BlockBase();
+                            this.player.SetStartPosition(new Point(30 * x, 30 * y));
+                            this.panelGame.Controls.Add(this.player.Picture);
+                            this.panelGame.Controls[this.panelGame.Controls.Count - 1].BringToFront();
+                            break;
                         case 'P':
                             newBlock = new Models.BlockBase();
-                            this.player = new Models.Player(this.increment);
                             this.player.SetStartPosition(new Point(30 * x, 30 * y));
                             this.panelGame.Controls.Add(this.player.Picture);
                             this.panelGame.Controls[this.panelGame.Controls.Count - 1].BringToFront();
@@ -116,6 +145,7 @@ namespace Soko
                     if (!this.currentLevel_Rigid[this.player.Position.X + 1, this.player.Position.Y].RigidBody)
                     {
                         this.player.MoveRight();
+                        this.lastBoxMoved = null;
                     }
                     else
                     {//rigid
@@ -123,6 +153,7 @@ namespace Soko
                             !this.currentLevel_Rigid[this.player.Position.X + 2, this.player.Position.Y].RigidBody)
                         {
                             this.currentLevel_Rigid[this.player.Position.X + 1, this.player.Position.Y].MoveRight();
+                            this.lastBoxMoved = this.currentLevel_Rigid[this.player.Position.X + 1, this.player.Position.Y];
                             this.currentLevel_Rigid[this.player.Position.X + 2, this.player.Position.Y] = this.currentLevel_Rigid[this.player.Position.X + 1, this.player.Position.Y];
                             this.currentLevel_Rigid[this.player.Position.X + 1, this.player.Position.Y] = new Models.BlockBase();
                             this.player.MoveRight();
@@ -135,6 +166,7 @@ namespace Soko
                     if (!this.currentLevel_Rigid[this.player.Position.X - 1, this.player.Position.Y].RigidBody)
                     {
                         this.player.MoveLeft();
+                        this.lastBoxMoved = null;
                     }
                     else
                     {//rigid
@@ -142,6 +174,7 @@ namespace Soko
                             !this.currentLevel_Rigid[this.player.Position.X - 2, this.player.Position.Y].RigidBody)
                         {
                             this.currentLevel_Rigid[this.player.Position.X - 1, this.player.Position.Y].MoveLeft();
+                            this.lastBoxMoved = this.currentLevel_Rigid[this.player.Position.X - 1, this.player.Position.Y];
                             this.currentLevel_Rigid[this.player.Position.X - 2, this.player.Position.Y] = this.currentLevel_Rigid[this.player.Position.X - 1, this.player.Position.Y];
                             this.currentLevel_Rigid[this.player.Position.X - 1, this.player.Position.Y] = new Models.BlockBase();
                             this.player.MoveLeft();
@@ -154,6 +187,7 @@ namespace Soko
                     if (!this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y - 1].RigidBody)
                     {
                         this.player.MoveUP();
+                        this.lastBoxMoved = null;
                     }
                     else
                     {//rigid
@@ -161,6 +195,7 @@ namespace Soko
                             !this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y - 2].RigidBody)
                         {
                             this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y - 1].MoveUP();
+                            this.lastBoxMoved = this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y - 1];
                             this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y - 2] = this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y - 1];
                             this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y - 1] = new Models.BlockBase();
                             this.player.MoveUP();
@@ -173,6 +208,7 @@ namespace Soko
                     if (!this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y + 1].RigidBody)
                     {
                         this.player.MoveDown();
+                        this.lastBoxMoved = null;
                     }
                     else
                     {//rigid
@@ -180,6 +216,7 @@ namespace Soko
                             !this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y + 2].RigidBody)
                         {
                             this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y + 1].MoveDown();
+                            this.lastBoxMoved = this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y + 1];
                             this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y + 2] = this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y + 1];
                             this.currentLevel_Rigid[this.player.Position.X, this.player.Position.Y + 1] = new Models.BlockBase();
                             this.player.MoveDown();
@@ -191,15 +228,15 @@ namespace Soko
                 default:
                     break;
             }
-            this.lbStatusMoves.Text = this.player.MovesCount.ToString("000000");
-            this.lbStatusPushes.Text = this.pushes.ToString("000000");
+            this.UpdateStatus();
+
         }
 
         private void CheckSlots()
         {
             for (short i = 0; i < this.boxList.Count; i++)
             {
-                if (!this.slotList.Contains(this.boxList[i].Picture.Location))
+                if (!this.slotPositionList.Contains(this.boxList[i].Picture.Location))
                 {
                     return;
                 }
@@ -211,13 +248,152 @@ namespace Soko
         {
             MessageBox.Show("You WON!");
             this.currentLevel++;
-            this.LoadLevel();
+            this.LoadLevel(null);
+        }
+
+        private void btRestartLevel_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Are you sure to restart the Level?", "Restart Level?", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.OK)
+            {
+                this.LoadLevel(null);
+                this.UpdateStatus();
+            }
+        }
+
+        private void btUndo_Click(object sender, EventArgs e)
+        {
+            this.player.Undo();
+            if (this.lastBoxMoved != null)
+            {
+                Point lastBoxPosition = ((Models.Box)this.lastBoxMoved).Position;
+                ((Models.Box)this.lastBoxMoved).Undo();
+                Point currentBoxPosition = ((Models.Box)this.lastBoxMoved).Position;
+
+                this.currentLevel_Rigid[currentBoxPosition.X, currentBoxPosition.Y] = this.currentLevel_Rigid[lastBoxPosition.X, lastBoxPosition.Y];
+                this.currentLevel_Rigid[lastBoxPosition.X, lastBoxPosition.Y] = new Models.BlockBase();
+
+                this.pushes++;
+                this.lastBoxMoved = null;
+            }
+            this.UpdateStatus();
         }
 
         private void btHelp_Click(object sender, EventArgs e)
         {
             FormHelp formHelp = new FormHelp();
             formHelp.ShowDialog();
+        }
+
+        private void UpdateStatus()
+        {
+            this.lbStatusMoves.Text = this.player.MovesCount.ToString("000000");
+            this.lbStatusPushes.Text = this.pushes.ToString("000000");
+        }
+
+        private void btSave_Click(object sender, EventArgs e)
+        {
+            string[,] currentLevelStateIndividual = new string[this.currentLevel_Rigid.GetUpperBound(0)+1, this.currentLevel_Rigid.GetUpperBound(1)+1];
+
+            for (int y = 0; y < this.currentLevel_Rigid.GetUpperBound(1)+1; y++)
+            {
+                for (int x = 0; x < this.currentLevel_Rigid.GetUpperBound(0)+1; x++)
+                {
+                    if (this.currentLevel_Rigid[x, y].Picture != null)
+                    {
+                        if (this.currentLevel_Rigid[x, y].Picture.Tag.ToString() == "B" && this.slotPositionList.Contains(new Point(x * this.increment, y * this.increment)))
+                        {
+                            currentLevelStateIndividual[x, y] = "X";
+                        }
+                        else
+                        {
+                            currentLevelStateIndividual[x, y] = this.currentLevel_Rigid[x, y].Picture.Tag.ToString();
+                        }
+                    }
+                    else
+                    {
+                        currentLevelStateIndividual[x, y] = " ";
+                    }
+                }
+            }
+
+            if (this.slotPositionList.Contains(this.player.Picture.Location))
+                currentLevelStateIndividual[this.player.Position.X, this.player.Position.Y] = "Y";
+            else
+                currentLevelStateIndividual[this.player.Position.X, this.player.Position.Y] = this.player.Picture.Tag.ToString();
+
+
+            StringBuilder sb = new StringBuilder();
+            string[] currentLevelStateFinal = new string[currentLevelStateIndividual.GetUpperBound(1)+1];
+            for (int y = 0; y < this.currentLevel_Rigid.GetUpperBound(1)+1; y++)
+            {
+                for (int x = 0; x < this.currentLevel_Rigid.GetUpperBound(0)+1; x++)
+                {
+                    sb.Append(currentLevelStateIndividual[x, y]);
+                }
+                //sb.Append("\r\n");
+                currentLevelStateFinal[y] = sb.ToString();
+                sb.Clear();
+            }
+            //File.WriteAllText("levelTest.txt", sb.ToString());
+            sb = null;
+
+            StateGameData gameData = new StateGameData(this.currentLevel, this.player.MovesCount, this.pushes);
+            gameData.CurrentLevelState = currentLevelStateFinal;
+            if (!Directory.Exists(System.Environment.CurrentDirectory + "\\Save"))
+                Directory.CreateDirectory(System.Environment.CurrentDirectory + "\\Save");
+
+            IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+            Stream stream = new FileStream(System.Environment.CurrentDirectory + "\\Save\\Save0.bin", FileMode.Create, FileAccess.Write);
+            formatter.Serialize(stream, gameData);
+            stream.Close();
+        }
+
+        private void btLoad_Click(object sender, EventArgs e)
+        {
+            IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+            Stream stream = new FileStream(System.Environment.CurrentDirectory + "\\Save\\Save0.bin", FileMode.Open, FileAccess.Read);
+            object obj = formatter.Deserialize(stream);
+            stream.Close();
+
+            StateGameData gameData = (StateGameData)obj;
+            this.currentLevel = gameData.CurrentLevel;
+            this.player.MovesCount = gameData.Moves;
+            this.pushes = gameData.Pushes;
+            this.UpdateStatus();
+            this.LoadLevel(gameData.CurrentLevelState);
+        }
+    }
+
+    [Serializable]
+    public class StateGameData
+    {
+        ushort currentLevel;
+        int moves, pushes;
+        string[] currentLevelState;
+
+        public ushort CurrentLevel
+        {
+            get { return this.currentLevel; }
+        }
+        public int Moves
+        {
+            get { return this.moves; }
+        }
+        public int Pushes
+        {
+            get { return this.pushes; }
+        }
+        public string[] CurrentLevelState
+        {
+            get { return this.currentLevelState; }
+            set { this.currentLevelState = value; }
+        }
+
+        public StateGameData(ushort _currentLevel, int _moves, int _pushes)
+        {
+            this.currentLevel = _currentLevel;
+            this.moves = _moves;
+            this.pushes = _pushes;
         }
     }
 }
