@@ -34,18 +34,21 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.lbStatusCurrentLevel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lbStatusTotalLevels = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.lbStatusMoves = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel5 = new System.Windows.Forms.ToolStripStatusLabel();
             this.lbStatusPushes = new System.Windows.Forms.ToolStripStatusLabel();
-            this.lbStatusTotalLevels = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.btNewGame = new System.Windows.Forms.ToolStripButton();
+            this.btLoad = new System.Windows.Forms.ToolStripButton();
+            this.btSave = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.btUndo = new System.Windows.Forms.ToolStripButton();
-            this.btReset = new System.Windows.Forms.ToolStripButton();
+            this.btRestartLevel = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.btHelp = new System.Windows.Forms.ToolStripButton();
             this.panelGame.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -106,6 +109,12 @@
             this.lbStatusCurrentLevel.Size = new System.Drawing.Size(25, 20);
             this.lbStatusCurrentLevel.Text = "00";
             // 
+            // lbStatusTotalLevels
+            // 
+            this.lbStatusTotalLevels.Name = "lbStatusTotalLevels";
+            this.lbStatusTotalLevels.Size = new System.Drawing.Size(35, 20);
+            this.lbStatusTotalLevels.Text = "/ 00";
+            // 
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
@@ -142,19 +151,16 @@
             this.lbStatusPushes.Size = new System.Drawing.Size(57, 20);
             this.lbStatusPushes.Text = "000000";
             // 
-            // lbStatusTotalLevels
-            // 
-            this.lbStatusTotalLevels.Name = "lbStatusTotalLevels";
-            this.lbStatusTotalLevels.Size = new System.Drawing.Size(35, 20);
-            this.lbStatusTotalLevels.Text = "/ 00";
-            // 
             // toolStrip1
             // 
             this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.btUndo,
+            this.btNewGame,
+            this.btLoad,
+            this.btSave,
             this.toolStripSeparator1,
-            this.btReset,
+            this.btUndo,
+            this.btRestartLevel,
             this.toolStripSeparator2,
             this.btHelp});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
@@ -163,15 +169,39 @@
             this.toolStrip1.TabIndex = 3;
             this.toolStrip1.Text = "toolStrip1";
             // 
+            // btNewGame
+            // 
+            this.btNewGame.Image = ((System.Drawing.Image)(resources.GetObject("btNewGame.Image")));
+            this.btNewGame.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btNewGame.Name = "btNewGame";
+            this.btNewGame.Size = new System.Drawing.Size(43, 44);
+            this.btNewGame.Text = "&New";
+            this.btNewGame.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            // 
+            // btLoad
+            // 
+            this.btLoad.Image = ((System.Drawing.Image)(resources.GetObject("btLoad.Image")));
+            this.btLoad.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btLoad.Name = "btLoad";
+            this.btLoad.Size = new System.Drawing.Size(46, 44);
+            this.btLoad.Text = "&Load";
+            this.btLoad.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.btLoad.Click += new System.EventHandler(this.btLoad_Click);
+            // 
+            // btSave
+            // 
+            this.btSave.Image = ((System.Drawing.Image)(resources.GetObject("btSave.Image")));
+            this.btSave.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btSave.Name = "btSave";
+            this.btSave.Size = new System.Drawing.Size(44, 44);
+            this.btSave.Text = "&Save";
+            this.btSave.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.btSave.Click += new System.EventHandler(this.btSave_Click);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 47);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 47);
             // 
             // btUndo
             // 
@@ -181,15 +211,22 @@
             this.btUndo.Size = new System.Drawing.Size(49, 44);
             this.btUndo.Text = "&Undo";
             this.btUndo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.btUndo.Click += new System.EventHandler(this.btUndo_Click);
             // 
-            // btReset
+            // btRestartLevel
             // 
-            this.btReset.Image = ((System.Drawing.Image)(resources.GetObject("btReset.Image")));
-            this.btReset.ImageTransparentColor = System.Drawing.Color.Black;
-            this.btReset.Name = "btReset";
-            this.btReset.Size = new System.Drawing.Size(49, 44);
-            this.btReset.Text = "&Reset";
-            this.btReset.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.btRestartLevel.Image = ((System.Drawing.Image)(resources.GetObject("btRestartLevel.Image")));
+            this.btRestartLevel.ImageTransparentColor = System.Drawing.Color.Black;
+            this.btRestartLevel.Name = "btRestartLevel";
+            this.btRestartLevel.Size = new System.Drawing.Size(97, 44);
+            this.btRestartLevel.Text = "&Restart Level";
+            this.btRestartLevel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.btRestartLevel.Click += new System.EventHandler(this.btRestartLevel_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 47);
             // 
             // btHelp
             // 
@@ -241,8 +278,11 @@
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton btUndo;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripButton btReset;
+        private System.Windows.Forms.ToolStripButton btRestartLevel;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton btHelp;
+        private System.Windows.Forms.ToolStripButton btNewGame;
+        private System.Windows.Forms.ToolStripButton btLoad;
+        private System.Windows.Forms.ToolStripButton btSave;
     }
 }
