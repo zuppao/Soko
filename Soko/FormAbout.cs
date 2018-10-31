@@ -10,11 +10,16 @@ using System.Windows.Forms;
 
 namespace Soko
 {
-    public partial class FormHelp : Form
+    public partial class FormAbout : Form
     {
-        public FormHelp()
+        public FormAbout()
         {
             InitializeComponent();
+        }
+
+        private void btOK_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }
