@@ -20,7 +20,7 @@ namespace Soko
         Models.BlockBase lastBoxMoved;
         List<Point> slotPositionList;
         List<Models.BlockBase> boxList;
-
+        short slotNumber;
         short increment;
         ushort currentLevel;
         int pushes;
@@ -32,15 +32,13 @@ namespace Soko
 
         private void FormGame2_Load(object sender, EventArgs e)
         {
+            if (!Directory.Exists(System.Environment.CurrentDirectory + "\\Save"))
+                Directory.CreateDirectory(System.Environment.CurrentDirectory + "\\Save");
+
             this.increment = 30;
             Models.BlockBase.Increment = this.increment;
-            this.currentLevel = 1;
             this.lbStatusTotalLevels.Text = Directory.GetFiles(System.Environment.CurrentDirectory + "\\Levels", "Level***.txt").Length.ToString("/ 00");
-
-            this.slotPositionList = new List<Point>();
-            this.boxList = new List<Models.BlockBase>();
-            this.player = new Models.Player(this.increment);
-            this.LoadLevel(null);
+            this.btNewGame_Click(null, new EventArgs());
         }
 
         private void LoadLevel(string[] _lineBlocks)
@@ -251,14 +249,7 @@ namespace Soko
             this.LoadLevel(null);
         }
 
-        private void btRestartLevel_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("Are you sure to restart the Level?", "Restart Level?", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.OK)
-            {
-                this.LoadLevel(null);
-                this.UpdateStatus();
-            }
-        }
+
 
         private void btUndo_Click(object sender, EventArgs e)
         {
@@ -280,7 +271,7 @@ namespace Soko
 
         private void btHelp_Click(object sender, EventArgs e)
         {
-            FormHelp formHelp = new FormHelp();
+            FormAbout formHelp = new FormAbout();
             formHelp.ShowDialog();
         }
 
@@ -292,75 +283,147 @@ namespace Soko
 
         private void btSave_Click(object sender, EventArgs e)
         {
-            string[,] currentLevelStateIndividual = new string[this.currentLevel_Rigid.GetUpperBound(0)+1, this.currentLevel_Rigid.GetUpperBound(1)+1];
-
-            for (int y = 0; y < this.currentLevel_Rigid.GetUpperBound(1)+1; y++)
+            if (this.slotNumber == -1)
             {
-                for (int x = 0; x < this.currentLevel_Rigid.GetUpperBound(0)+1; x++)
+                Slots slotsForm = new Slots();
+                slotsForm.SetTitles("Save", SaveLoad.Save);
+                if (slotsForm.ShowDialog() != DialogResult.OK)
+                    return;
+
+                this.slotNumber = slotsForm.SlotNumber;
+            }
+
+            try
+            {
+                string[,] currentLevelStateIndividual = new string[this.currentLevel_Rigid.GetUpperBound(0) + 1, this.currentLevel_Rigid.GetUpperBound(1) + 1];
+
+                for (int y = 0; y < this.currentLevel_Rigid.GetUpperBound(1) + 1; y++)
                 {
-                    if (this.currentLevel_Rigid[x, y].Picture != null)
+                    for (int x = 0; x < this.currentLevel_Rigid.GetUpperBound(0) + 1; x++)
                     {
-                        if (this.currentLevel_Rigid[x, y].Picture.Tag.ToString() == "B" && this.slotPositionList.Contains(new Point(x * this.increment, y * this.increment)))
+                        if (this.currentLevel_Rigid[x, y].Picture != null)
                         {
-                            currentLevelStateIndividual[x, y] = "X";
+                            if (this.currentLevel_Rigid[x, y].Picture.Tag.ToString() == "B" && this.slotPositionList.Contains(new Point(x * this.increment, y * this.increment)))
+                            {
+                                currentLevelStateIndividual[x, y] = "X";
+                            }
+                            else
+                            {
+                                currentLevelStateIndividual[x, y] = this.currentLevel_Rigid[x, y].Picture.Tag.ToString();
+                            }
                         }
                         else
                         {
-                            currentLevelStateIndividual[x, y] = this.currentLevel_Rigid[x, y].Picture.Tag.ToString();
+                            currentLevelStateIndividual[x, y] = " ";
                         }
                     }
-                    else
-                    {
-                        currentLevelStateIndividual[x, y] = " ";
-                    }
                 }
-            }
 
-            if (this.slotPositionList.Contains(this.player.Picture.Location))
-                currentLevelStateIndividual[this.player.Position.X, this.player.Position.Y] = "Y";
-            else
-                currentLevelStateIndividual[this.player.Position.X, this.player.Position.Y] = this.player.Picture.Tag.ToString();
-
-
-            StringBuilder sb = new StringBuilder();
-            string[] currentLevelStateFinal = new string[currentLevelStateIndividual.GetUpperBound(1)+1];
-            for (int y = 0; y < this.currentLevel_Rigid.GetUpperBound(1)+1; y++)
-            {
-                for (int x = 0; x < this.currentLevel_Rigid.GetUpperBound(0)+1; x++)
+                if (this.slotPositionList.Contains(this.player.Picture.Location))
                 {
-                    sb.Append(currentLevelStateIndividual[x, y]);
+                    currentLevelStateIndividual[this.player.Position.X, this.player.Position.Y] = "Y";
                 }
-                //sb.Append("\r\n");
-                currentLevelStateFinal[y] = sb.ToString();
-                sb.Clear();
+                else
+                {
+                    currentLevelStateIndividual[this.player.Position.X, this.player.Position.Y] = this.player.Picture.Tag.ToString();
+                }
+
+                StringBuilder sb = new StringBuilder();
+                string[] currentLevelStateFinal = new string[currentLevelStateIndividual.GetUpperBound(1) + 1];
+                for (int y = 0; y < this.currentLevel_Rigid.GetUpperBound(1) + 1; y++)
+                {
+                    for (int x = 0; x < this.currentLevel_Rigid.GetUpperBound(0) + 1; x++)
+                    {
+                        sb.Append(currentLevelStateIndividual[x, y]);
+                    }
+                    currentLevelStateFinal[y] = sb.ToString();
+                    sb.Clear();
+                }
+                //File.WriteAllText("levelTest.txt", sb.ToString());
+                sb = null;
+
+                StateGameData gameData = new StateGameData(this.currentLevel, this.player.MovesCount, this.pushes);
+                gameData.CurrentLevelState = currentLevelStateFinal;
+
+                IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                Stream stream = new FileStream(System.Environment.CurrentDirectory + "\\Save\\Save" + this.slotNumber + ".bin", FileMode.Create, FileAccess.Write);
+                formatter.Serialize(stream, gameData);
+                stream.Close();
+                MessageBox.Show("Game successfully saved!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            //File.WriteAllText("levelTest.txt", sb.ToString());
-            sb = null;
+            catch (Exception ex)
+            {
+                MessageBox.Show("Game could not be saved: " + ex.Message, "Fail", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
-            StateGameData gameData = new StateGameData(this.currentLevel, this.player.MovesCount, this.pushes);
-            gameData.CurrentLevelState = currentLevelStateFinal;
-            if (!Directory.Exists(System.Environment.CurrentDirectory + "\\Save"))
-                Directory.CreateDirectory(System.Environment.CurrentDirectory + "\\Save");
 
-            IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-            Stream stream = new FileStream(System.Environment.CurrentDirectory + "\\Save\\Save0.bin", FileMode.Create, FileAccess.Write);
-            formatter.Serialize(stream, gameData);
-            stream.Close();
+
         }
 
         private void btLoad_Click(object sender, EventArgs e)
         {
-            IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-            Stream stream = new FileStream(System.Environment.CurrentDirectory + "\\Save\\Save0.bin", FileMode.Open, FileAccess.Read);
-            object obj = formatter.Deserialize(stream);
-            stream.Close();
+            Slots slotsForm = new Slots();
+            slotsForm.SetTitles("Load", SaveLoad.Load);
+            if (slotsForm.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
 
-            StateGameData gameData = (StateGameData)obj;
-            this.currentLevel = gameData.CurrentLevel;
-            this.player.MovesCount = gameData.Moves;
-            this.pushes = gameData.Pushes;
+            if (MessageBox.Show("All your current progress will be lost. Are you sure?", "Load", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
+            {
+                return;
+            }
+
+            this.slotNumber = slotsForm.SlotNumber;
+
+
+            try
+            {
+                IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                Stream stream = new FileStream(System.Environment.CurrentDirectory + "\\Save\\Save" + this.slotNumber + ".bin", FileMode.Open, FileAccess.Read);
+                object obj = formatter.Deserialize(stream);
+                stream.Close();
+
+                StateGameData gameData = (StateGameData)obj;
+                this.currentLevel = gameData.CurrentLevel;
+                this.player.MovesCount = gameData.Moves;
+                this.pushes = gameData.Pushes;
+                this.UpdateStatus();
+                this.LoadLevel(gameData.CurrentLevelState);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("The game could not be loaded: " + ex.Message, "Fail", MessageBoxButtons.OK, MessageBoxIcon.Error)
+
+            }
+        }
+
+        private void btRestartLevel_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Are you sure to restart the Level? All your current progress will be lost.", "Restart Level", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
+            {
+                this.LoadLevel(null);
+                this.UpdateStatus();
+            }
+        }
+
+        private void btNewGame_Click(object sender, EventArgs e)
+        {
+            if (sender != null)
+            {
+                if (MessageBox.Show("Are you sure to start a new game? All your current progress will be lost.", "New Game", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
+                {
+                    return;
+                }
+            }
+
+            this.slotNumber = -1;
+            this.currentLevel = 1;
+            this.slotPositionList = new List<Point>();
+            this.boxList = new List<Models.BlockBase>();
+            this.player = new Models.Player(this.increment);
+            this.LoadLevel(null);
             this.UpdateStatus();
-            this.LoadLevel(gameData.CurrentLevelState);
         }
     }
 
